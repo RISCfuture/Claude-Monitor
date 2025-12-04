@@ -41,25 +41,6 @@ struct Claude_MonitorApp: App {
   @NSApplicationDelegateAdaptor(AppDelegate.self)
   private var appDelegate
 
-  init() {
-    SentrySDK.start { options in
-      options.dsn =
-        "https://2c46a025d464b0b7eea0ef443c109d20@o4510156629475328.ingest.us.sentry.io/4510477814398976"
-      options.sendDefaultPii = true
-      options.tracesSampleRate = 1.0
-
-      options.configureProfiling = {
-        $0.sessionSampleRate = 1.0
-        $0.lifecycle = .trace
-      }
-
-      #if DEBUG
-        // Discard all events in debug builds
-        options.beforeSend = { _ in nil }
-      #endif
-    }
-  }
-
   /// The shared view model used across all views.
   @State private var viewModel = UsageViewModel()
 
@@ -79,6 +60,25 @@ struct Claude_MonitorApp: App {
         .onAppear {
           NSApp.activate(ignoringOtherApps: true)
         }
+    }
+  }
+
+  init() {
+    SentrySDK.start { options in
+      options.dsn =
+        "https://2c46a025d464b0b7eea0ef443c109d20@o4510156629475328.ingest.us.sentry.io/4510477814398976"
+      options.sendDefaultPii = true
+      options.tracesSampleRate = 1.0
+
+      options.configureProfiling = {
+        $0.sessionSampleRate = 1.0
+        $0.lifecycle = .trace
+      }
+
+      #if DEBUG
+        // Discard all events in debug builds
+        options.beforeSend = { _ in nil }
+      #endif
     }
   }
 }
