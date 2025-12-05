@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		01024E652EE1FDF0002CC293 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 01024E642EE1FDF0002CC293 /* Sentry */; };
 		01F78B9E2EE1739B006D357C /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 01F78B9D2EE1739B006D357C /* Logging */; };
+		01WIDGET012EE30000000001 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01WIDGET002EE30000000001 /* WidgetKit.framework */; };
+		01WIDGET022EE30000000001 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01WIDGET002EE30000000002 /* SwiftUI.framework */; };
+		01WIDGET032EE30000000001 /* Claude Monitor Widget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 01WIDGET002EE30000000003 /* Claude Monitor Widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,12 +29,34 @@
 			remoteGlobalIDString = 0160FC542EE0CEC1006E6A22;
 			remoteInfo = "Claude Monitor";
 		};
+		01WIDGET042EE30000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0160FC4D2EE0CEC1006E6A22 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 01WIDGET102EE30000000001;
+			remoteInfo = "Claude Monitor Widget";
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		01WIDGET062EE30000000001 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolder = PlugIns;
+			files = (
+				01WIDGET032EE30000000001 /* Claude Monitor Widget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0160FC552EE0CEC1006E6A22 /* Claude Monitor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Claude Monitor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0160FC622EE0CEC3006E6A22 /* Claude MonitorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Claude MonitorTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0160FC6C2EE0CEC3006E6A22 /* Claude MonitorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Claude MonitorUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		01WIDGET002EE30000000001 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		01WIDGET002EE30000000002 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		01WIDGET002EE30000000003 /* Claude Monitor Widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Claude Monitor Widget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -48,6 +73,11 @@
 		0160FC6F2EE0CEC3006E6A22 /* Claude MonitorUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "Claude MonitorUITests";
+			sourceTree = "<group>";
+		};
+		01WIDGET052EE30000000001 /* Claude Monitor Widget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Claude Monitor Widget";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -70,6 +100,13 @@
 			files = (
 			);
 		};
+		01WIDGET072EE30000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+				01WIDGET012EE30000000001 /* WidgetKit.framework in Frameworks */,
+				01WIDGET022EE30000000001 /* SwiftUI.framework in Frameworks */,
+			);
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -77,8 +114,10 @@
 			isa = PBXGroup;
 			children = (
 				0160FC572EE0CEC1006E6A22 /* Claude Monitor */,
+				01WIDGET052EE30000000001 /* Claude Monitor Widget */,
 				0160FC652EE0CEC3006E6A22 /* Claude MonitorTests */,
 				0160FC6F2EE0CEC3006E6A22 /* Claude MonitorUITests */,
+				01WIDGET082EE30000000001 /* Frameworks */,
 				0160FC562EE0CEC1006E6A22 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -89,8 +128,18 @@
 				0160FC552EE0CEC1006E6A22 /* Claude Monitor.app */,
 				0160FC622EE0CEC3006E6A22 /* Claude MonitorTests.xctest */,
 				0160FC6C2EE0CEC3006E6A22 /* Claude MonitorUITests.xctest */,
+				01WIDGET002EE30000000003 /* Claude Monitor Widget.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		01WIDGET082EE30000000001 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				01WIDGET002EE30000000001 /* WidgetKit.framework */,
+				01WIDGET002EE30000000002 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -103,8 +152,12 @@
 				0160FC512EE0CEC1006E6A22 /* Sources */,
 				0160FC522EE0CEC1006E6A22 /* Frameworks */,
 				0160FC532EE0CEC1006E6A22 /* Resources */,
+				01WIDGET062EE30000000001 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
+			);
+			dependencies = (
+				01WIDGET052EE30000000002 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				0160FC572EE0CEC1006E6A22 /* Claude Monitor */,
@@ -160,6 +213,24 @@
 			productReference = 0160FC6C2EE0CEC3006E6A22 /* Claude MonitorUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		01WIDGET102EE30000000001 /* Claude Monitor Widget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B3BB623B2EE2ABC1003188A1 /* Build configuration list for PBXNativeTarget "Claude Monitor Widget" */;
+			buildPhases = (
+				01WIDGET092EE30000000001 /* Sources */,
+				01WIDGET072EE30000000001 /* Frameworks */,
+				01WIDGET0A2EE30000000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			fileSystemSynchronizedGroups = (
+				01WIDGET052EE30000000001 /* Claude Monitor Widget */,
+			);
+			name = "Claude Monitor Widget";
+			productName = "Claude Monitor Widget";
+			productReference = 01WIDGET002EE30000000003 /* Claude Monitor Widget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -180,6 +251,9 @@
 					0160FC6B2EE0CEC3006E6A22 = {
 						CreatedOnToolsVersion = 26.1.1;
 						TestTargetID = 0160FC542EE0CEC1006E6A22;
+					};
+					01WIDGET102EE30000000001 = {
+						CreatedOnToolsVersion = 26.1.1;
 					};
 				};
 			};
@@ -202,6 +276,7 @@
 			projectRoot = "";
 			targets = (
 				0160FC542EE0CEC1006E6A22 /* Claude Monitor */,
+				01WIDGET102EE30000000001 /* Claude Monitor Widget */,
 				0160FC612EE0CEC3006E6A22 /* Claude MonitorTests */,
 				0160FC6B2EE0CEC3006E6A22 /* Claude MonitorUITests */,
 			);
@@ -224,6 +299,11 @@
 			files = (
 			);
 		};
+		01WIDGET0A2EE30000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -242,6 +322,11 @@
 			files = (
 			);
 		};
+		01WIDGET092EE30000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -254,6 +339,11 @@
 			isa = PBXTargetDependency;
 			target = 0160FC542EE0CEC1006E6A22 /* Claude Monitor */;
 			targetProxy = 0160FC6D2EE0CEC3006E6A22 /* PBXContainerItemProxy */;
+		};
+		01WIDGET052EE30000000002 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 01WIDGET102EE30000000001 /* Claude Monitor Widget */;
+			targetProxy = 01WIDGET042EE30000000001 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -385,10 +475,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = "Claude Monitor/Claude_Monitor.entitlements";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 2NFSK2WB24;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
@@ -413,9 +505,9 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "codes.tim.Claude-Monitor";
+				PRODUCT_BUNDLE_IDENTIFIER = "--codes.tim.Claude-Monitor";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				REGISTER_APP_GROUPS = YES;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -428,10 +520,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = "Claude Monitor/Claude_Monitor.entitlements";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 2NFSK2WB24;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
@@ -456,9 +550,9 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "codes.tim.Claude-Monitor";
+				PRODUCT_BUNDLE_IDENTIFIER = "--codes.tim.Claude-Monitor";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				REGISTER_APP_GROUPS = YES;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -472,7 +566,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 2NFSK2WB24;
+				DEVELOPMENT_TEAM = P7BV7FZWPF;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 26.1;
 				MARKETING_VERSION = 1.0;
@@ -492,7 +586,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 2NFSK2WB24;
+				DEVELOPMENT_TEAM = P7BV7FZWPF;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 26.1;
 				MARKETING_VERSION = 1.0;
@@ -511,7 +605,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 2NFSK2WB24;
+				DEVELOPMENT_TEAM = P7BV7FZWPF;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "codes.tim.Claude-MonitorUITests";
@@ -529,7 +623,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 2NFSK2WB24;
+				DEVELOPMENT_TEAM = P7BV7FZWPF;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "codes.tim.Claude-MonitorUITests";
@@ -539,6 +633,72 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				TEST_TARGET_NAME = "Claude Monitor";
+			};
+			name = Release;
+		};
+		B3BB62392EE2ABA9003188A1 /* Debug configuration for PBXNativeTarget "Claude Monitor Widget" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = "Claude Monitor Widget/Claude_Monitor_Widget.entitlements";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Claude Monitor Widget/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Claude Monitor Widget";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "--codes.tim.Claude-Monitor.widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+			};
+			name = Debug;
+		};
+		B3BB623A2EE2ABA9003188A1 /* Release configuration for PBXNativeTarget "Claude Monitor Widget" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = "Claude Monitor Widget/Claude_Monitor_Widget.entitlements";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Claude Monitor Widget/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Claude Monitor Widget";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "--codes.tim.Claude-Monitor.widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 			};
 			name = Release;
 		};
@@ -574,6 +734,14 @@
 			buildConfigurations = (
 				0160FC7D2EE0CEC3006E6A22 /* Debug configuration for PBXNativeTarget "Claude MonitorUITests" */,
 				0160FC7E2EE0CEC3006E6A22 /* Release configuration for PBXNativeTarget "Claude MonitorUITests" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		B3BB623B2EE2ABC1003188A1 /* Build configuration list for PBXNativeTarget "Claude Monitor Widget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B3BB62392EE2ABA9003188A1 /* Debug configuration for PBXNativeTarget "Claude Monitor Widget" */,
+				B3BB623A2EE2ABA9003188A1 /* Release configuration for PBXNativeTarget "Claude Monitor Widget" */,
 			);
 			defaultConfigurationName = Release;
 		};
