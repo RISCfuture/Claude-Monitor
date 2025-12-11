@@ -67,7 +67,7 @@ struct Claude_MonitorApp: App {
     SentrySDK.start { options in
       options.dsn =
         "https://2c46a025d464b0b7eea0ef443c109d20@o4510156629475328.ingest.us.sentry.io/4510477814398976"
-      options.sendDefaultPii = true
+      options.sendDefaultPii = false
       options.tracesSampleRate = 1.0
 
       options.configureProfiling = {
@@ -78,6 +78,20 @@ struct Claude_MonitorApp: App {
       #if DEBUG
         // Discard all events in debug builds
         options.beforeSend = { _ in nil }
+      #else
+        // Scrub sensitive data in production builds
+        options.beforeSend = { event in
+          // Remove Authorization headers from request context
+          if let request = event.request {
+            var scrubbedRequest = request
+            var headers = request.headers ?? [:]
+            headers.removeValue(forKey: "Authorization")
+            headers.removeValue(forKey: "authorization")
+            scrubbedRequest.headers = headers
+            event.request = scrubbedRequest
+          }
+          return event
+        }
       #endif
     }
   }
