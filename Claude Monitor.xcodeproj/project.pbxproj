@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		01024E652EE1FDF0002CC293 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 01024E642EE1FDF0002CC293 /* Sentry */; };
+		013B4ADB2EEBED99003E34E7 /* GitHubUpdateChecker in Frameworks */ = {isa = PBXBuildFile; productRef = 013B4ADA2EEBED99003E34E7 /* GitHubUpdateChecker */; };
 		01F78B9E2EE1739B006D357C /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 01F78B9D2EE1739B006D357C /* Logging */; };
 /* End PBXBuildFile section */
 
@@ -58,6 +59,7 @@
 			files = (
 				01F78B9E2EE1739B006D357C /* Logging in Frameworks */,
 				01024E652EE1FDF0002CC293 /* Sentry in Frameworks */,
+				013B4ADB2EEBED99003E34E7 /* GitHubUpdateChecker in Frameworks */,
 			);
 		};
 		0160FC5F2EE0CEC3006E6A22 /* Frameworks */ = {
@@ -113,6 +115,7 @@
 			packageProductDependencies = (
 				01F78B9D2EE1739B006D357C /* Logging */,
 				01024E642EE1FDF0002CC293 /* Sentry */,
+				013B4ADA2EEBED99003E34E7 /* GitHubUpdateChecker */,
 			);
 			productName = "Claude Monitor";
 			productReference = 0160FC552EE0CEC1006E6A22 /* Claude Monitor.app */;
@@ -195,6 +198,7 @@
 			packageReferences = (
 				01F78B9C2EE1739B006D357C /* XCRemoteSwiftPackageReference "swift-log" */,
 				01024E632EE1FDF0002CC293 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
+				013B4AD92EEBED99003E34E7 /* XCRemoteSwiftPackageReference "GitHubUpdateChecker" */,
 			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 0160FC562EE0CEC1006E6A22 /* Products */;
@@ -402,7 +406,7 @@
 				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
 				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
 				ENABLE_RESOURCE_ACCESS_USB = NO;
-				ENABLE_USER_SELECTED_FILES = readonly;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Claude Monitor";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -445,7 +449,7 @@
 				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
 				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
 				ENABLE_RESOURCE_ACCESS_USB = NO;
-				ENABLE_USER_SELECTED_FILES = readonly;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Claude Monitor";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -588,6 +592,14 @@
 				minimumVersion = 9.0.0;
 			};
 		};
+		013B4AD92EEBED99003E34E7 /* XCRemoteSwiftPackageReference "GitHubUpdateChecker" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RISCfuture/GitHubUpdateChecker";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		01F78B9C2EE1739B006D357C /* XCRemoteSwiftPackageReference "swift-log" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-log.git";
@@ -603,6 +615,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 01024E632EE1FDF0002CC293 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 			productName = Sentry;
+		};
+		013B4ADA2EEBED99003E34E7 /* GitHubUpdateChecker */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 013B4AD92EEBED99003E34E7 /* XCRemoteSwiftPackageReference "GitHubUpdateChecker" */;
+			productName = GitHubUpdateChecker;
 		};
 		01F78B9D2EE1739B006D357C /* Logging */ = {
 			isa = XCSwiftPackageProductDependency;

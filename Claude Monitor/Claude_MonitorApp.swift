@@ -6,6 +6,7 @@
 //
 
 import AppKit
+import GitHubUpdateChecker
 import Sentry
 import SwiftUI
 
@@ -14,10 +15,16 @@ import SwiftUI
 /// This delegate starts the `UsageDataService` when the app finishes launching,
 /// ensuring data is fetched and background refresh begins immediately.
 final class AppDelegate: NSObject, NSApplicationDelegate {
+  /// The update checker instance, set by the App struct.
+  var updateChecker: GitHubUpdateChecker?
+
   func applicationDidFinishLaunching(_: Notification) {
+    AppMover.moveToApplicationsFolderIfNeeded()
+
     Task {
       await UsageDataService.shared.start()
     }
+    updateChecker?.startAutomaticChecks()
   }
 }
 
@@ -44,10 +51,14 @@ struct Claude_MonitorApp: App {
   /// The shared view model used across all views.
   @State private var viewModel = UsageViewModel()
 
+  /// The update checker for checking GitHub releases.
+  private let updateChecker = GitHubUpdateChecker(owner: "RISCfuture", repo: "Claude-Monitor")
+
   var body: some Scene {
     MenuBarExtra {
       ContentView()
         .viewModel(viewModel)
+        .updateChecker(updateChecker)
     } label: {
       MenuBarIconView()
         .viewModel(viewModel)
@@ -57,6 +68,7 @@ struct Claude_MonitorApp: App {
     Settings {
       SettingsView()
         .viewModel(viewModel)
+        .updateChecker(updateChecker)
         .onAppear {
           NSApp.activate(ignoringOtherApps: true)
         }
@@ -80,5 +92,8 @@ struct Claude_MonitorApp: App {
         options.beforeSend = { _ in nil }
       #endif
     }
+
+    // Pass update checker to app delegate for automatic checks on launch
+    appDelegate.updateChecker = updateChecker
   }
 }

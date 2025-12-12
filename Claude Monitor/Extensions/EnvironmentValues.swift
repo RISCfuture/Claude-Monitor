@@ -5,6 +5,7 @@
 //  Created by Tim Morgan on 12/3/25.
 //
 
+import GitHubUpdateChecker
 import SwiftUI
 
 // MARK: - Environment Key
@@ -29,5 +30,27 @@ extension View {
   /// Sets the view model in the environment.
   func viewModel(_ viewModel: UsageViewModel) -> some View {
     environment(\.viewModel, viewModel)
+  }
+}
+
+// MARK: - Update Checker Key
+
+/// Environment key for providing the update checker.
+private struct UpdateCheckerKey: EnvironmentKey {
+  static let defaultValue: GitHubUpdateChecker? = nil
+}
+
+extension EnvironmentValues {
+  /// The update checker for checking GitHub releases.
+  var updateChecker: GitHubUpdateChecker? {
+    get { self[UpdateCheckerKey.self] }
+    set { self[UpdateCheckerKey.self] = newValue }
+  }
+}
+
+extension View {
+  /// Sets the update checker in the environment.
+  func updateChecker(_ checker: GitHubUpdateChecker) -> some View {
+    environment(\.updateChecker, checker)
   }
 }

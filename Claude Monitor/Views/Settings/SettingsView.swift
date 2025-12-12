@@ -5,6 +5,7 @@
 //  Created by Tim Morgan on 12/3/25.
 //
 
+import GitHubUpdateChecker
 import SwiftUI
 
 /// The main settings view for configuring API tokens.
@@ -24,6 +25,9 @@ import SwiftUI
 struct SettingsView: View {
   @Environment(\.viewModel)
   private var viewModel
+
+  @Environment(\.updateChecker)
+  private var updateChecker
 
   var body: some View {
     @Bindable var viewModel = viewModel
@@ -54,6 +58,22 @@ struct SettingsView: View {
 
       Section("Where Do I Get a Token?") {
         SettingsHelpView()
+      }
+
+      Section("Automatic Updates") {
+        Picker("Check for Updates", selection: Bindable(UpdatePreferences.shared).updateCadence) {
+          Text("Never").tag(UpdateCadence.never)
+          Text("Hourly").tag(UpdateCadence.hourly)
+          Text("Daily").tag(UpdateCadence.daily)
+          Text("Weekly").tag(UpdateCadence.weekly)
+        }
+        .pickerStyle(.menu)
+
+        Button("Check Now") {
+          Task {
+            await updateChecker?.checkForUpdatesAndShowUI()
+          }
+        }
       }
     }
     .formStyle(.grouped)

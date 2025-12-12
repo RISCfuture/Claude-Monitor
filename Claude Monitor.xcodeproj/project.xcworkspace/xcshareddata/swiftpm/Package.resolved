@@ -1,13 +1,40 @@
 {
-  "originHash" : "c4f9c27d1cd5d55ab127de824691e72fa1a36fae69361287c14c71c1f09aa80f",
+  "originHash" : "e8b1d2bb8687137b0eeabccd0835781dff8018702b181f35f85b513690b32640",
   "pins" : [
+    {
+      "identity" : "githubupdatechecker",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RISCfuture/GitHubUpdateChecker",
+      "state" : {
+        "branch" : "main",
+        "revision" : "305aa1bdfd9f49ce6e61988007b0690ddb674b8e"
+      }
+    },
+    {
+      "identity" : "networkimage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/gonzalezreal/NetworkImage",
+      "state" : {
+        "revision" : "2849f5323265386e200484b0d0f896e73c3411b9",
+        "version" : "6.0.1"
+      }
+    },
     {
       "identity" : "sentry-cocoa",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getsentry/sentry-cocoa",
       "state" : {
-        "revision" : "1e740ef1dd4b25e6e7109ee807a03396695e631f",
-        "version" : "9.0.0"
+        "revision" : "0041fe6374a0557747d3c7f19888510a30684dfa",
+        "version" : "9.1.0"
+      }
+    },
+    {
+      "identity" : "swift-cmark",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-cmark",
+      "state" : {
+        "revision" : "5d9bdaa4228b381639fff09403e39a04926e2dbe",
+        "version" : "0.7.1"
       }
     },
     {
@@ -15,8 +42,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-log.git",
       "state" : {
-        "revision" : "ca538143e2dc2b5996c34b9322a1ed9def1d7747",
-        "version" : "1.7.0"
+        "revision" : "b1fa4ef41fe21b13120c034854042d12c43f66b2",
+        "version" : "1.7.1"
+      }
+    },
+    {
+      "identity" : "swift-markdown-ui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/gonzalezreal/swift-markdown-ui",
+      "state" : {
+        "revision" : "5f613358148239d0292c0cef674a3c2314737f9e",
+        "version" : "2.4.1"
       }
     }
   ],
