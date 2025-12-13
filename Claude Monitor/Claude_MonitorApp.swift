@@ -8,6 +8,7 @@
 import AppKit
 import GitHubUpdateChecker
 import Sentry
+import ServiceManagement
 import SwiftUI
 
 /// The application delegate that handles app lifecycle events.
@@ -25,6 +26,29 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
       await UsageDataService.shared.start()
     }
     updateChecker?.startAutomaticChecks()
+
+    promptForLaunchAtLoginIfNeeded()
+  }
+
+  /// Prompts the user to enable launch at login on first launch.
+  private func promptForLaunchAtLoginIfNeeded() {
+    let hasPromptedKey = "hasPromptedForLaunchAtLogin"
+    guard !UserDefaults.standard.bool(forKey: hasPromptedKey) else { return }
+
+    UserDefaults.standard.set(true, forKey: hasPromptedKey)
+
+    DispatchQueue.main.async {
+      let alert = NSAlert()
+      alert.messageText = "Launch at Login?"
+      alert.informativeText =
+        "Would you like Claude Monitor to start automatically when you log in?"
+      alert.addButton(withTitle: "Start at Login")
+      alert.addButton(withTitle: "No")
+
+      if alert.runModal() == .alertFirstButtonReturn {
+        try? SMAppService.mainApp.register()
+      }
+    }
   }
 }
 

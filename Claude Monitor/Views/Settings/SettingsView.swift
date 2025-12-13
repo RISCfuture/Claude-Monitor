@@ -29,8 +29,11 @@ struct SettingsView: View {
   @Environment(\.updateChecker)
   private var updateChecker
 
+  @State private var loginItemObserver = LoginItemObserver()
+
   var body: some View {
     @Bindable var viewModel = viewModel
+    @Bindable var loginItemObserver = loginItemObserver
 
     Form {
       Section {
@@ -54,13 +57,12 @@ struct SettingsView: View {
           .foregroundStyle(.orange)
           .font(.caption)
         }
-      }
 
-      Section("Where Do I Get a Token?") {
         SettingsHelpView()
       }
+      Section {
+        Toggle("Launch at Login", isOn: $loginItemObserver.isEnabled)
 
-      Section("Automatic Updates") {
         Picker("Check for Updates", selection: Bindable(UpdatePreferences.shared).updateCadence) {
           Text("Never").tag(UpdateCadence.never)
           Text("Hourly").tag(UpdateCadence.hourly)
