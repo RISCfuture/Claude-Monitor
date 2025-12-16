@@ -20,6 +20,9 @@ import Foundation
 protocol UsageViewModelProtocol: AnyObject, Observable {
   // MARK: - Usage State
 
+  /// Whether the service is still initializing (loading keychain).
+  var isInitializing: Bool { get set }
+
   /// The current usage limits to display.
   var usageLimits: [UsageLimit] { get set }
 

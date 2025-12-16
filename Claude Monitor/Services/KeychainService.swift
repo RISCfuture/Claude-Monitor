@@ -75,16 +75,17 @@ enum TokenSource: String {
 /// token based on user preference with fallback behavior.
 ///
 /// ## Thread Safety
-/// This service is `Sendable` and safe to use from any actor or thread.
+/// This service is an actor, ensuring all Keychain operations run off the main thread.
+/// Tokens are cached after first access to avoid repeated Keychain queries.
 ///
 /// ## Example
 /// ```swift
 /// let service = KeychainService.shared
-/// if let (token, source) = service.resolveToken(preferredSource: .claudeCode) {
+/// if let (token, source) = await service.resolveToken(preferredSource: .claudeCode) {
 ///   print("Using token from \(source)")
 /// }
 /// ```
-final class KeychainService: Sendable {
+actor KeychainService {
   /// The shared singleton instance.
   static let shared = KeychainService()
 
@@ -93,28 +94,68 @@ final class KeychainService: Sendable {
   private let claudeCodeServiceName = "Claude Code-credentials"
   private let logger = Logger(label: "codes.tim.Claude-Monitor.KeychainService")
 
+  // MARK: - Token Cache
+
+  private var cachedClaudeCodeToken: String?
+  private var cachedManualToken: String?
+  private var claudeCodeCacheLoaded = false
+  private var manualCacheLoaded = false
+
   /// Whether a Claude Code token is available in the Keychain.
   var isClaudeCodeTokenAvailable: Bool {
-    (try? readClaudeCodeToken()) != nil
+    loadClaudeCodeTokenIfNeeded()
+    return cachedClaudeCodeToken != nil
   }
 
   /// Whether a manually-entered token is available in the Keychain.
   var isManualTokenAvailable: Bool {
-    (try? readManualToken()) != nil
+    loadManualTokenIfNeeded()
+    return cachedManualToken != nil
   }
 
   private init() {}
+
+  // MARK: - Cache Management
+
+  private func loadClaudeCodeTokenIfNeeded() {
+    guard !claudeCodeCacheLoaded else { return }
+    cachedClaudeCodeToken = try? readClaudeCodeTokenFromKeychain()
+    claudeCodeCacheLoaded = true
+  }
+
+  private func loadManualTokenIfNeeded() {
+    guard !manualCacheLoaded else { return }
+    cachedManualToken = try? readManualTokenFromKeychain()
+    manualCacheLoaded = true
+  }
+
+  /// Invalidates the token cache, forcing a fresh read from Keychain on next access.
+  func invalidateCache() {
+    cachedClaudeCodeToken = nil
+    cachedManualToken = nil
+    claudeCodeCacheLoaded = false
+    manualCacheLoaded = false
+  }
 
   // MARK: - Claude Code Token (Primary - Read Only)
 
   /// Reads the OAuth token from Claude Code's Keychain entry.
   ///
-  /// Claude Code stores its credentials as JSON in the Keychain. This method
-  /// retrieves and parses that JSON to extract the OAuth access token.
+  /// This method uses caching to avoid repeated Keychain access.
+  /// The cache is populated on first access.
   ///
   /// - Returns: The OAuth access token string.
   /// - Throws: A ``KeychainError`` if the token cannot be read or parsed.
   func readClaudeCodeToken() throws -> String {
+    loadClaudeCodeTokenIfNeeded()
+    guard let token = cachedClaudeCodeToken else {
+      throw KeychainError.itemNotFound
+    }
+    return token
+  }
+
+  /// Reads directly from Keychain without caching.
+  private func readClaudeCodeTokenFromKeychain() throws -> String {
     let query: [String: Any] = [
       kSecClass as String: kSecClassGenericPassword,
       kSecAttrService as String: claudeCodeServiceName,
@@ -167,7 +208,8 @@ final class KeychainService: Sendable {
   /// Saves a manually-entered token to the app's Keychain entry.
   ///
   /// This method stores the token securely in the Keychain. If a token already
-  /// exists, it is deleted before saving the new one.
+  /// exists, it is deleted before saving the new one. The cache is updated
+  /// after a successful save.
   ///
   /// - Parameter token: The OAuth token to save.
   /// - Throws: A ``KeychainError`` if the token cannot be saved.
@@ -176,7 +218,7 @@ final class KeychainService: Sendable {
       throw KeychainError.invalidData
     }
 
-    try? deleteManualToken()
+    try? deleteManualTokenFromKeychain()
 
     let query: [String: Any] = [
       kSecClass as String: kSecClassGenericPassword,
@@ -193,14 +235,29 @@ final class KeychainService: Sendable {
       throw KeychainError.unexpectedStatus(status)
     }
 
+    // Update cache
+    cachedManualToken = token
+    manualCacheLoaded = true
+
     logger.info("Saved manual token to Keychain")
   }
 
   /// Reads the manually-entered token from the app's Keychain entry.
   ///
+  /// This method uses caching to avoid repeated Keychain access.
+  ///
   /// - Returns: The saved OAuth token string.
   /// - Throws: A ``KeychainError`` if no token exists or it cannot be read.
   func readManualToken() throws -> String {
+    loadManualTokenIfNeeded()
+    guard let token = cachedManualToken else {
+      throw KeychainError.itemNotFound
+    }
+    return token
+  }
+
+  /// Reads directly from Keychain without caching.
+  private func readManualTokenFromKeychain() throws -> String {
     let query: [String: Any] = [
       kSecClass as String: kSecClassGenericPassword,
       kSecAttrService as String: appServiceName,
@@ -230,10 +287,20 @@ final class KeychainService: Sendable {
 
   /// Deletes the manually-entered token from the app's Keychain entry.
   ///
-  /// This method is safe to call even if no token exists.
+  /// This method is safe to call even if no token exists. The cache is
+  /// cleared after deletion.
   ///
   /// - Throws: A ``KeychainError`` if an unexpected error occurs.
   func deleteManualToken() throws {
+    try deleteManualTokenFromKeychain()
+
+    // Clear cache
+    cachedManualToken = nil
+    manualCacheLoaded = true
+  }
+
+  /// Deletes directly from Keychain without updating cache.
+  private func deleteManualTokenFromKeychain() throws {
     let query: [String: Any] = [
       kSecClass as String: kSecClassGenericPassword,
       kSecAttrService as String: appServiceName,
@@ -253,6 +320,7 @@ final class KeychainService: Sendable {
   ///
   /// This method only returns a token from the specified source. If the preferred
   /// source has no token available, `nil` is returned (no fallback).
+  /// Uses cached values to avoid repeated Keychain access.
   ///
   /// - Parameter preferredSource: The user's preferred token source.
   /// - Returns: A tuple of the token and its source, or `nil` if no token is available.

@@ -44,7 +44,9 @@ struct ContentView: View {
 
       Divider()
 
-      if viewModel.hasValidToken {
+      if viewModel.isInitializing {
+        InitializingView()
+      } else if viewModel.hasValidToken {
         UsageContentView(
           usageLimits: viewModel.usageLimits,
           error: viewModel.error,

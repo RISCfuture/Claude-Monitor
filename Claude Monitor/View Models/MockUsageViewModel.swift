@@ -34,6 +34,7 @@ import Observation
 final class MockUsageViewModel: UsageViewModelProtocol {
   // MARK: - Usage State
 
+  var isInitializing = false
   var usageLimits: [UsageLimit] = []
   var isLoading = false
   var error: Error?
@@ -60,6 +61,13 @@ final class MockUsageViewModel: UsageViewModelProtocol {
 // MARK: - Preview Helpers
 
 extension MockUsageViewModel {
+  /// A mock in the initializing state (loading keychain).
+  static var initializing: MockUsageViewModel {
+    let vm = MockUsageViewModel()
+    vm.isInitializing = true
+    return vm
+  }
+
   /// A mock in the loading state with no data yet.
   static var loading: MockUsageViewModel {
     let vm = MockUsageViewModel()

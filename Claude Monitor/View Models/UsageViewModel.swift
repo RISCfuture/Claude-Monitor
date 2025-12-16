@@ -45,6 +45,7 @@ enum TokenValidationResult {
 final class UsageViewModel: UsageViewModelProtocol {
   // MARK: - State from Service (synced via AsyncStream)
 
+  var isInitializing = true
   var usageLimits: [UsageLimit] = []
   var lastUpdated: Date?
   var error: Error?
@@ -75,9 +76,8 @@ final class UsageViewModel: UsageViewModelProtocol {
 
   // MARK: - Protocol Conformance
 
-  var isClaudeCodeTokenAvailable: Bool {
-    KeychainService.shared.isClaudeCodeTokenAvailable
-  }
+  /// Whether a Claude Code token is available. Updated asynchronously from service.
+  private(set) var isClaudeCodeTokenAvailable = false
 
   // MARK: - Initialization
 
@@ -91,12 +91,18 @@ final class UsageViewModel: UsageViewModelProtocol {
       self.preferredTokenSource = .claudeCode
     }
 
-    // Load existing manual token if available
-    if let token = try? KeychainService.shared.readManualToken() {
-      self.manualTokenInput = token
-    }
-
     startSubscription()
+    loadManualTokenAsync()
+  }
+
+  /// Loads the manual token asynchronously to avoid blocking main thread.
+  private func loadManualTokenAsync() {
+    Task {
+      if let token = try? await KeychainService.shared.readManualToken() {
+        self.manualTokenInput = token
+      }
+      self.isClaudeCodeTokenAvailable = await KeychainService.shared.isClaudeCodeTokenAvailable
+    }
   }
 
   // MARK: - Subscription
@@ -105,14 +111,14 @@ final class UsageViewModel: UsageViewModelProtocol {
     subscriptionTask = Task { [weak self] in
       for await state in UsageDataService.shared.stateStream {
         guard let self, !Task.isCancelled else { break }
-        await MainActor.run {
-          self.usageLimits = state.usageLimits
-          self.lastUpdated = state.lastUpdated
-          self.error = state.error
-          self.tokenSource = state.tokenSource
-          self.hasValidToken = state.hasValidToken
-          self.preferredTokenSource = state.preferredTokenSource
-        }
+        // Already on @MainActor, no need for MainActor.run wrapper
+        isInitializing = state.isInitializing
+        usageLimits = state.usageLimits
+        lastUpdated = state.lastUpdated
+        error = state.error
+        tokenSource = state.tokenSource
+        hasValidToken = state.hasValidToken
+        preferredTokenSource = state.preferredTokenSource
       }
     }
   }
@@ -140,10 +146,14 @@ final class UsageViewModel: UsageViewModelProtocol {
       try? await Task.sleep(for: .milliseconds(300))
       guard !Task.isCancelled else { return }
 
-      if token.isEmpty {
-        try? await UsageDataService.shared.clearManualToken()
-      } else {
-        try? await UsageDataService.shared.saveManualToken(token)
+      do {
+        if token.isEmpty {
+          try await UsageDataService.shared.clearManualToken()
+        } else {
+          try await UsageDataService.shared.saveManualToken(token)
+        }
+      } catch {
+        // Token save errors are non-fatal, logged by the service
       }
     }
   }

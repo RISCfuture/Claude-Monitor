@@ -36,6 +36,9 @@ actor UsageDataService {
 
   // MARK: - State
 
+  /// Whether the service is still initializing (loading keychain).
+  private(set) var isInitializing = true
+
   /// The current usage limits.
   private(set) var usageLimits: [UsageLimit] = []
 
@@ -65,6 +68,7 @@ actor UsageDataService {
 
   private let refreshInterval: TimeInterval = 60
   private var backgroundTask: Task<Void, Never>?
+  private var isRefreshing = false
   private let logger = Logger(label: "codes.tim.Claude-Monitor.UsageDataService")
 
   // MARK: - State Publishing
@@ -91,6 +95,7 @@ actor UsageDataService {
 
   private var currentState: State {
     State(
+      isInitializing: isInitializing,
       usageLimits: usageLimits,
       lastUpdated: lastUpdated,
       error: error,
@@ -102,12 +107,16 @@ actor UsageDataService {
 
   /// Whether a Claude Code token is available.
   var isClaudeCodeTokenAvailable: Bool {
-    KeychainService.shared.isClaudeCodeTokenAvailable
+    get async {
+      await KeychainService.shared.isClaudeCodeTokenAvailable
+    }
   }
 
   /// Whether a manual token is available.
   var isManualTokenAvailable: Bool {
-    KeychainService.shared.isManualTokenAvailable
+    get async {
+      await KeychainService.shared.isManualTokenAvailable
+    }
   }
 
   // MARK: - Initialization
@@ -150,8 +159,12 @@ actor UsageDataService {
     // Request notification permission
     await NotificationService.shared.requestPermission()
 
-    // Check token availability
-    checkTokenAvailability()
+    // Check token availability (async keychain access)
+    await checkTokenAvailability()
+
+    // Mark initialization complete
+    isInitializing = false
+    publishState()
 
     // Perform initial data fetch
     await refresh()
@@ -162,10 +175,14 @@ actor UsageDataService {
 
   /// Fetches fresh usage data from the API.
   func refresh() async {
+    guard !isRefreshing else { return }
+    isRefreshing = true
+    defer { isRefreshing = false }
+
     error = nil
 
     guard
-      let (token, source) = KeychainService.shared.resolveToken(
+      let (token, source) = await KeychainService.shared.resolveToken(
         preferredSource: preferredTokenSource
       )
     else {
@@ -215,15 +232,15 @@ actor UsageDataService {
   /// - Parameter token: The token to save.
   /// - Throws: A `KeychainError` if saving fails.
   func saveManualToken(_ token: String) async throws {
-    try KeychainService.shared.saveManualToken(token)
-    checkTokenAvailability()
+    try await KeychainService.shared.saveManualToken(token)
+    await checkTokenAvailability()
     await refresh()
   }
 
   /// Clears the manually-entered token from the Keychain.
-  func clearManualToken() throws {
-    try KeychainService.shared.deleteManualToken()
-    checkTokenAvailability()
+  func clearManualToken() async throws {
+    try await KeychainService.shared.deleteManualToken()
+    await checkTokenAvailability()
     usageLimits = []
     lastUpdated = nil
     publishState()
@@ -231,9 +248,10 @@ actor UsageDataService {
 
   // MARK: - Private Methods
 
-  private func checkTokenAvailability() {
-    if let (_, source) = KeychainService.shared.resolveToken(preferredSource: preferredTokenSource)
-    {
+  private func checkTokenAvailability() async {
+    if let (_, source) = await KeychainService.shared.resolveToken(
+      preferredSource: preferredTokenSource
+    ) {
       tokenSource = source
       hasValidToken = true
     } else {
@@ -320,6 +338,7 @@ actor UsageDataService {
 
   /// A snapshot of the service's current state.
   struct State: Sendable {
+    let isInitializing: Bool
     let usageLimits: [UsageLimit]
     let lastUpdated: Date?
     let error: Error?
