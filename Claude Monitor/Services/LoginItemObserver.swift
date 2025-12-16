@@ -15,9 +15,18 @@ import ServiceManagement
 @MainActor
 @Observable
 final class LoginItemObserver {
-  var isEnabled = SMAppService.mainApp.status == .enabled {
+  /// Whether the app is running from a location where login items work.
+  private static var canUseLoginItems: Bool {
+    let bundlePath = Bundle.main.bundlePath
+    return bundlePath.hasPrefix("/Applications")
+      || bundlePath.hasPrefix(NSHomeDirectory() + "/Applications")
+  }
+
+  var isEnabled: Bool {
     didSet {
-      guard isEnabled != (SMAppService.mainApp.status == .enabled) else { return }
+      guard Self.canUseLoginItems, isEnabled != (SMAppService.mainApp.status == .enabled) else {
+        return
+      }
       try? isEnabled ? SMAppService.mainApp.register() : SMAppService.mainApp.unregister()
     }
   }
@@ -25,10 +34,13 @@ final class LoginItemObserver {
   private var pollingTask: Task<Void, Never>?
 
   init() {
+    isEnabled = Self.canUseLoginItems && SMAppService.mainApp.status == .enabled
     startPolling()
   }
 
   private func startPolling() {
+    guard Self.canUseLoginItems else { return }
+
     pollingTask = Task { @MainActor [weak self] in
       while !Task.isCancelled {
         try? await Task.sleep(for: .milliseconds(500))
