@@ -7,6 +7,7 @@
 
 import Foundation
 import Logging
+import RegexBuilder
 import Security
 
 /// Errors that can occur when accessing the macOS Keychain.
@@ -88,6 +89,19 @@ enum TokenSource: String {
 actor KeychainService {
   /// The shared singleton instance.
   static let shared = KeychainService()
+
+  /// Pattern to extract the access token from Claude Code's JSON credentials.
+  nonisolated(unsafe) private static let accessTokenPattern = Regex {
+    #""accessToken""#
+    ZeroOrMore(.whitespace)
+    ":"
+    ZeroOrMore(.whitespace)
+    "\""
+    Capture {
+      OneOrMore(CharacterClass.anyOf("\"").inverted)
+    }
+    "\""
+  }
 
   private let appServiceName = "codes.tim.Claude-Monitor"
   private let appAccountName = "api-token"
@@ -175,32 +189,38 @@ actor KeychainService {
       throw KeychainError.unexpectedStatus(status)
     }
 
-    guard let data = result as? Data,
-      let jsonString = String(data: data, encoding: .utf8)
-    else {
-      logger.error("Invalid data format for Claude Code token")
+    guard let data = result as? Data else {
+      logger.error("Claude Code token data has invalid format")
       throw KeychainError.invalidData
     }
 
-    logger.debug("Successfully read Claude Code token")
-    return try parseClaudeCodeCredentials(jsonString)
+    // Filter out null bytes - Claude Code's keychain data may contain embedded nulls
+    let filteredData = data.filter { $0 != 0 }
+
+    guard let credentialsString = String(data: filteredData, encoding: .utf8) else {
+      logger.error("Claude Code token data is not valid UTF-8")
+      throw KeychainError.invalidData
+    }
+
+    return try parseClaudeCodeCredentials(credentialsString)
   }
 
-  private func parseClaudeCodeCredentials(_ json: String) throws -> String {
-    guard let data = json.data(using: .utf8) else {
+  private func parseClaudeCodeCredentials(_ credentials: String) throws -> String {
+    // Claude Code stores credentials as JSON, but the data may be truncated.
+    // Instead of parsing the full JSON, we extract the accessToken directly.
+    guard let match = credentials.firstMatch(of: Self.accessTokenPattern) else {
+      logger.error("Could not find accessToken in Claude Code credentials")
       throw KeychainError.invalidData
     }
 
-    struct Credentials: Codable {
-      let claudeAiOauth: OAuth
+    let token = String(match.1)
 
-      struct OAuth: Codable {
-        let accessToken: String
-      }
+    guard token.hasPrefix("sk-ant-") else {
+      logger.error("Claude Code token has unexpected format")
+      throw KeychainError.invalidData
     }
 
-    let credentials = try JSONDecoder().decode(Credentials.self, from: data)
-    return credentials.claudeAiOauth.accessToken
+    return token
   }
 
   // MARK: - Manual Token (Secondary - Read/Write)
