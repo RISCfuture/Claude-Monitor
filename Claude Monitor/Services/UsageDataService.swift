@@ -174,7 +174,15 @@ actor UsageDataService {
   }
 
   /// Fetches fresh usage data from the API.
+  ///
+  /// If a 401 Unauthorized error occurs, the keychain cache is invalidated
+  /// and the refresh is retried once. This handles the case where Claude Code
+  /// has refreshed its OAuth token in the background.
   func refresh() async {
+    await performRefresh(retryOnAuthFailure: true)
+  }
+
+  private func performRefresh(retryOnAuthFailure: Bool) async {
     guard !isRefreshing else { return }
     isRefreshing = true
     defer { isRefreshing = false }
@@ -205,6 +213,18 @@ actor UsageDataService {
 
       // Evaluate limits for notifications
       await NotificationService.shared.evaluateLimits(usageLimits)
+    } catch let apiError as APIError {
+      // On 401 Unauthorized, invalidate the keychain cache and retry once.
+      // Claude Code may have refreshed its OAuth token in the background.
+      if case .httpError(statusCode: 401, _) = apiError, retryOnAuthFailure {
+        logger.info("Got 401, invalidating keychain cache and retrying")
+        await KeychainService.shared.invalidateCache()
+        isRefreshing = false
+        await performRefresh(retryOnAuthFailure: false)
+        return
+      }
+      logger.error("Failed to refresh usage data", metadata: ["error": "\(apiError)"])
+      self.error = apiError
     } catch {
       logger.error("Failed to refresh usage data", metadata: ["error": "\(error)"])
       self.error = error
