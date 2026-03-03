@@ -38,7 +38,7 @@ On first launch, you'll need to provide your Claude session token:
 This project uses [swift-format](https://github.com/swiftlang/swift-format) for code formatting:
 
 ```bash
-swift-format format --in-place --recursive "Claude Monitor"
+swift format format --in-place --recursive "Claude Monitor"
 ```
 
 ### Linting

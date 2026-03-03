@@ -31,15 +31,9 @@ jobs:
       image: swift:latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install dependencies
-        run: apt-get update && apt-get install -y wget
       - name: Download .swift-format config
-        run: wget -O .swift-format https://gist.githubusercontent.com/RISCfuture/e0c21afb7bd80a88d128a42bf40d2ecd/raw/.swift-format
-      - name: Install swift-format
         run: |
-          git clone https://github.com/swiftlang/swift-format.git
-          cd swift-format
-          swift build -c release
-          cp .build/release/swift-format /usr/local/bin/
+          apt-get update && apt-get install -y wget
+          wget -O .swift-format https://gist.githubusercontent.com/RISCfuture/e0c21afb7bd80a88d128a42bf40d2ecd/raw/.swift-format
       - name: Run swift-format lint
-        run: swift-format lint -r .
+        run: swift format lint -r .
