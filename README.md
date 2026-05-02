@@ -1,5 +1,12 @@
 # Claude Monitor
 
+[![CI](https://github.com/RISCfuture/Claude-Monitor/actions/workflows/ci.yml/badge.svg)](https://github.com/RISCfuture/Claude-Monitor/actions/workflows/ci.yml)
+[![Lint](https://github.com/RISCfuture/Claude-Monitor/actions/workflows/lint.yml/badge.svg)](https://github.com/RISCfuture/Claude-Monitor/actions/workflows/lint.yml)
+[![Release](https://github.com/RISCfuture/Claude-Monitor/actions/workflows/release.yml/badge.svg)](https://github.com/RISCfuture/Claude-Monitor/actions/workflows/release.yml)
+[![Latest Release](https://img.shields.io/github/v/release/RISCfuture/Claude-Monitor.svg)](https://github.com/RISCfuture/Claude-Monitor/releases/latest)
+[![Platform](https://img.shields.io/badge/platform-macOS-lightgrey.svg)](https://developer.apple.com/macos/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 A macOS menu bar application that displays your Claude API usage limits.
 
 ## Features
