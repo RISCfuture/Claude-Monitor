@@ -2,3 +2,4 @@
 
 # SwiftLint Remote Config Cache
 .swiftlint/RemoteConfigCache
+.claude/settings.local.json
