@@ -1,5 +1,16 @@
+# Xcode
+build/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# SwiftLint / swift-format
+.swiftlint/RemoteConfigCache
 .swift-format
 
-# SwiftLint Remote Config Cache
-.swiftlint/RemoteConfigCache
-.claude/settings.local.json
+# Sentry CLI config
+.sentryclirc
