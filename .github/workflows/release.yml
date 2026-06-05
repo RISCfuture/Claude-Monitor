@@ -48,7 +48,7 @@ jobs:
             -scheme "Claude Monitor" \
             -configuration Release \
             -destination "generic/platform=macOS" \
-            -derivedDataPath $RUNNER_TEMP/DerivedData \
+            -derivedDataPath "$RUNNER_TEMP/DerivedData" \
             CODE_SIGN_IDENTITY="-" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
@@ -94,10 +94,10 @@ jobs:
             --password "$APPLE_ID_PASSWORD"
 
           # Create ZIP for notarization
-          ditto -c -k --keepParent "$APP_PATH" $RUNNER_TEMP/Claude-Monitor-notarize.zip
+          ditto -c -k --keepParent "$APP_PATH" "$RUNNER_TEMP/Claude-Monitor-notarize.zip"
 
           # Submit for notarization and wait
-          SUBMISSION_OUTPUT=$(xcrun notarytool submit $RUNNER_TEMP/Claude-Monitor-notarize.zip \
+          SUBMISSION_OUTPUT=$(xcrun notarytool submit "$RUNNER_TEMP/Claude-Monitor-notarize.zip" \
             --keychain-profile "notarytool-profile" \
             --wait 2>&1) || true
           echo "$SUBMISSION_OUTPUT"
@@ -122,7 +122,7 @@ jobs:
             -srcfolder "$APP_PATH" \
             -ov \
             -format UDZO \
-            $RUNNER_TEMP/Claude-Monitor.dmg
+            "$RUNNER_TEMP/Claude-Monitor.dmg"
 
       - name: Upload to Release
         uses: softprops/action-gh-release@v3

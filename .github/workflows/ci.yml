@@ -26,4 +26,4 @@ jobs:
             -configuration Release \
             -destination "platform=macOS" \
             CODE_SIGNING_ALLOWED=NO \
-            build | xcpretty && exit ${PIPESTATUS[0]}
+            build | xcpretty && exit "${PIPESTATUS[0]}"
